@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Job
+metadata:
+  name: metfamily-dev-job
+spec:
+  selector:
+    matchLabels:
+      app: metfamily-dev
+  template:
+    metadata:
+      name: metfamily-dev
+      labels:
+         app: metfamily-dev
+    spec:
+      containers:
+      - name: metfamily-dev
+        image: metfamily-dev
+#        resources:
+#          limits:
+#            cpu: "0.1"
+#            memory: "4Gi"
+        ports:
+          - containerPort: 3838
+        volumeMounts: 
+          - name: metfamily-dev
+            mountPath: /vol/R/shiny/srv/shiny-server/MetFam
+      volumes:
+        - name: metfamily-dev
+          hostPath:
+            path: /vol/R/shiny/srv/shiny-server/MetFam
+      restartPolicy: Never
+
