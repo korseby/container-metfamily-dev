@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#
-# start.bash
-#
-
 HAPROXY="/etc/haproxy"
 OVERRIDE="/haproxy-override"
 PIDFILE="/var/run/haproxy.pid"

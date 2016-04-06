@@ -1,4 +1,4 @@
-weba:
+metfamily1:
   #build: .
   image: metfamily-dev
   volumes:
@@ -6,7 +6,7 @@ weba:
   expose:
     - 3838
 
-webb:
+metfamily2:
   #build: .
   image: metfamily-dev
   volumes:
@@ -14,7 +14,7 @@ webb:
   expose:
     - 3838
 
-webc:
+metfamily3:
   #build: .
   image: metfamily-dev
   volumes:
@@ -23,13 +23,13 @@ webc:
     - 3838
 
 haproxy:
-  image: haproxy
+  image: metfamily-haproxy
   volumes:
-   - haproxy:/haproxy-override
+   - metfamily-haproxy:/haproxy-override
   links:
-   - weba
-   - webb
-   - webc
+   - metfamily1
+   - metfamily2
+   - metfamily3
   ports:
    - "9080:80"
    - "9070:70"
