@@ -6,7 +6,7 @@
 
 
 # Name
-NAME="metfamily-dev"
+NAME="korseby/metfamily-dev"
 
 # CPU options
 #CPU_SHARES="--cpu-shares=8"
