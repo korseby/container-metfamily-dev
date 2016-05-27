@@ -15,7 +15,7 @@ NAME="korseby/metfamily-dev"
 #MEM="--memory=8g"
 
 # Ports
-PORT_PUB=9002
+PORT_PUB=9011
 PORT_DOCKER=3838
 
 # Volumes
