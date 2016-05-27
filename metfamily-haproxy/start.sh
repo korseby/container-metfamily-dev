@@ -22,5 +22,10 @@ if [[ -f "$OVERRIDE/$CONFIG" ]]; then
   ln -s "$OVERRIDE/$CONFIG" "$CONFIG"
 fi
 
+# Create hosts
+for ((i=0;i<=99;i++)); do
+  echo "10.38.38.$i metfamily$i dockermetfamilydev_metfamily_$i" >> /etc/hosts
+done
+
 exec haproxy -f /etc/haproxy/haproxy.cfg -p "$PIDFILE"
 

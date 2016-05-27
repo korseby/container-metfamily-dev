@@ -1,39 +1,64 @@
-metfamily1:
-  #build: .
-  image: metfamily-dev
-  volumes:
-  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
-  expose:
+version: '2'
+
+#metfamily1:
+#  container_name: metfamily1
+#  image: korseby/metfamily-dev
+#  volumes:
+#  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+#  expose:
+#    - 3838
+
+#metfamily2:
+#  container_name: metfamily2
+#  image: korseby/metfamily-dev
+#  volumes:
+#  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+#  expose:
+#    - 3838
+
+#metfamily3:
+#  container_name: metfamily3
+#  image: korseby/metfamily-dev
+#  volumes:
+#  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+#  expose:
+#    - 3838
+
+services:
+  metfamily:
+    image: korseby/metfamily-dev
+    networks:
+    - metfamily_net
+    volumes:
+    - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
+    expose:
     - 3838
 
-metfamily2:
-  #build: .
-  image: metfamily-dev
-  volumes:
-  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
-  expose:
-    - 3838
+  haproxy:
+    container_name: metfamily-haproxy
+    build: metfamily-haproxy
+    networks:
+    - metfamily_net
+    volumes:
+    - ./metfamily-haproxy:/haproxy-override
+    links:
+#    - metfamily1
+#    - metfamily2
+#    - metfamily3
+    - metfamily
+    ports:
+    - "9080:80"
+    - "9070:70"
+    expose:
+    - "80"
+    - "70"
 
-metfamily3:
-  #build: .
-  image: metfamily-dev
-  volumes:
-  - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
-  expose:
-    - 3838
-
-haproxy:
-  image: metfamily-haproxy
-  volumes:
-   - metfamily-haproxy:/haproxy-override
-  links:
-   - metfamily1
-   - metfamily2
-   - metfamily3
-  ports:
-   - "9080:80"
-   - "9070:70"
-  expose:
-   - "80"
-   - "70"
+networks:
+  metfamily_net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 10.38.38.0/24
+        ip_range: 10.38.38.0/24
+        gateway: 10.38.38.1
 
