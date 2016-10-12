@@ -2,7 +2,7 @@ FROM ubuntu:trusty
 
 MAINTAINER Kristian Peters <kpeters@ipb-halle.de>
 
-LABEL Description="Install MetFamily + underlying R shiny-server + relevant bioconductor packages in Docker."
+LABEL Description="MetFamily helps identifying metabolites and groups them into metabolite clusters (a.k.a. families)."
 
 
 
@@ -39,13 +39,6 @@ RUN apt-get -y install git python xorg-dev libglu1-mesa-dev freeglut3-dev libgom
 # Clean up
 RUN apt-get -y clean && apt-get -y autoremove && rm -rf /var/lib/{cache,log}/ /tmp/* /var/tmp/*
 
-## Install R packages & bioconductor
-##RUN R -e "install.packages(c('shiny','rmarkdown','shinyBS','shinyjs','DT'), repos='https://cran.rstudio.com/')"
-##RUN R -e "install.packages(c('squash','FactoMineR','devtools','stringi'), repos='https://cran.rstudio.com/')"
-##RUN R -e "install.packages(c('rCharts','cba','matrixStats','Matrix','plotrix','tools','htmltools'), repos='https://cran.rstudio.com/')"
-##RUN R -e "source('https://bioconductor.org/biocLite.R'); biocLite(); biocLite(c('xcms','mzR','pcaMethods'));"
-##RUN R -e "update.packages(repos='https://cran.rstudio.com/', ask=F)"
-
 # Install R packages
 RUN for PACK in $PACK_R; do R -e "install.packages(\"$PACK\", repos='https://cran.rstudio.com/')"; done
 
@@ -62,7 +55,8 @@ RUN git clone https://github.com/rstudio/shiny-server.git
 WORKDIR /usr/src/shiny-server
 RUN mkdir tmp
 WORKDIR /usr/src/shiny-server/tmp
-RUN DIR=`pwd`; PATH=$DIR/../bin:$PATH; PYTHON=`which python`; cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DPYTHON="$PYTHON" ../; make; mkdir ../build; (cd .. && ./bin/npm --python="$PYTHON" rebuild); (cd .. && ./bin/node ./ext/node/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js --python="$PYTHON" rebuild)
+RUN DIR=`pwd`; PATH=$DIR/../bin:$PATH; PYTHON=`which python`; cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DPYTHON="$PYTHON" ../ && make && mkdir ../build && (cd .. && ./bin/npm --python="$PYTHON" rebuild)
+RUN DIR=`pwd`; PATH=$DIR/../bin:$PATH; PYTHON=`which python`; (cd .. && ./bin/npm --python="$PYTHON" install && ./bin/node ./ext/node/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js --python="$PYTHON" rebuild)
 RUN make install
 RUN ln -s /usr/local/shiny-server/bin/shiny-server /usr/bin/shiny-server
 RUN useradd -r -m shiny
@@ -81,18 +75,11 @@ ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /var/log/supervisor
 RUN chmod 777 -R /var/log/supervisor
 
-
-# Development: using internal sources
+# Development: using internal IPB sources
 ENV VOL="/vol/R/shiny/srv/shiny-server/MetFam"
 RUN mkdir -p $VOL
 VOLUME $VOL
 RUN mv /srv/shiny-server /srv/shiny-server_orig; ln -s $VOL /srv/shiny-server
-
-# Stable: using official github repository
-#RUN mv /srv/shiny-server /srv/shiny-server_orig
-#WORKDIR /srv
-#RUN git clone https://github.com/Treutler/MetFamily
-#RUN mv MetFamily shiny-server
 
 # Expose port
 EXPOSE 3838
