@@ -24,7 +24,7 @@ fi
 
 # Create hosts
 for ((i=0;i<=99;i++)); do
-  echo "10.38.38.$i metfamily$i dockermetfamilydev_metfamily_$i" >> /etc/hosts
+  echo "10.83.83.$i metfamily_dev$i dockermetfamilydev_metfamily_dev_$i" >> /etc/hosts
 done
 
 exec haproxy -f /etc/haproxy/haproxy.cfg -p "$PIDFILE"
