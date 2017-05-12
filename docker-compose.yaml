@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   metfamily_dev:
@@ -34,6 +34,6 @@ networks:
     ipam:
       config:
       - subnet: 10.83.83.0/24
-        ip_range: 10.83.83.0/24
-        gateway: 10.83.83.1
+#        ip_range: 10.83.83.0/24
+#        gateway: 10.83.83.1
 
