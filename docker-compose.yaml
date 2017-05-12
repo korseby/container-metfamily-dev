@@ -9,6 +9,7 @@ services:
     - /vol/R/shiny/srv/shiny-server/MetFam:/vol/R/shiny/srv/shiny-server/MetFam
     expose:
     - 3838
+    restart: always
 
   haproxy:
     container_name: metfamily_dev_haproxy
@@ -25,6 +26,7 @@ services:
     expose:
     - "80"
     - "70"
+    restart: always
 
 networks:
   metfamily_dev_net:
